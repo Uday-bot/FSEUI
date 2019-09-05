@@ -1,0 +1,8 @@
+{
+    "files.exclude": {
+        "project.component.*": true
+    },
+    "search.exclude": {
+        "**/project": true
+    }
+}

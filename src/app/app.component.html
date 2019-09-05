@@ -1,0 +1,25 @@
+<div style="text-align:center">
+  <h1>
+    Welcome to {{ title }}!
+  </h1>
+</div>
+<div class="container">
+  <div class="row justify-content-center">
+    <h3>Project Manager</h3>
+  </div>
+</div>
+<nav class="navbar navbar-expand-sm ml-5">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav nav-pills">
+      <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['Project']">Add
+          Project</a></li>
+      <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['AddTask']">Add Task</a></li>
+      <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['User']">Add User</a>
+      </li>
+      <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['ViewTask']">View Task</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<br>
+<router-outlet></router-outlet>

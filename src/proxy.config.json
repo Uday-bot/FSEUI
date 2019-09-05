@@ -1,0 +1,9 @@
+{
+    "/api/*": {
+        "target": "http://localhost/FSEFinalapi/",
+        "secure": false,
+        "pathRewrite": {
+            "^/api": ""
+        }
+    }
+}

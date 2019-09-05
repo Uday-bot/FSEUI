@@ -1,0 +1,202 @@
+<div class="container">
+  <form [formGroup]="taskForm">
+    <div *ngIf="message" class="alert alert-success">
+      <div class="text-left">
+        {{message}}
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="projectId">Project:</label>
+      <div class="col-sm-8">
+        <input type="hidden" class="form-control" formControlName="projectId">
+        <input type="text" class="form-control" formControlName="projectTitle" id="projectTitle" required readonly>
+      </div>
+      <div class="col-sm-2">
+        <button type="button" class="btn btn-secondary" (click)="openProjectSearch();">Search</button>
+      </div>
+      <div
+        *ngIf="taskForm.controls['projectTitle'].invalid && (taskForm.controls['projectTitle'].dirty || taskForm.controls['projectTitle'].touched)"
+        class="alert alert-danger">
+        <div *ngIf="taskForm.controls['projectTitle'].errors.required">
+          Project Title required.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="taskNamelabel">Task:</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" formControlName="taskName" id="taskName" required></div>
+    </div>
+    <div
+      *ngIf="taskForm.controls['taskName'].invalid && (taskForm.controls['taskName'].dirty || taskForm.controls['taskName'].touched)"
+      class="alert alert-danger" style="width:61%;margin-left:9%">
+      <div *ngIf="taskForm.controls['taskName'].errors.required">
+        Task Name is required.
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-sm-2"></div>
+      <div class="col-sm-4 form-check">
+        <input type="checkbox" id="chkParentTask" [checked]="isParentSelected"
+          (click)="enableDisableParentTask($event);" formControllName="isParentChecked">
+        <label class="form-check-label ml-1">Parent Task</label>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="priorityValue">Priority: <b
+          class="display-box">{{taskForm.controls['priorityValue'].value}}</b></label>
+      <div class="w-1">0</div>
+      <div class="col-sm-8">
+        <input type="range" class="form-control" value="0" min="0" max="30" formControlName="priorityValue"></div>
+      <div class="w-1">30</div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="parentTaskLabel">Parent Task:</label>
+      <input type="hidden" class="form-control" formControlName="parentTaskId">
+      <div class="col-sm-8">
+        <input type="text" class="form-control" formControlName="parentTaskName" id="parentTaskName" readonly>
+      </div>
+      <div class="col-sm-2">
+        <button type="button" class="btn btn-secondary" [disabled]="isParentSelected"
+          (click)="openParentTaskSearch();">Search</button></div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="startDate">Start Date:</label>
+      <div class="col-sm-3">
+        <input type="date" class="form-control" formControlName="startDate" (change)="compareTwoDates();"></div>
+      <label for="startDate" class="col-sm-2 col-form-label">End Date:</label>
+      <div class="col-sm-3"><input style="float:rigt;" type="date" class="form-control" formControlName="endDate"
+          (change)="compareTwoDates();"></div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="lblUser">User :</label>
+      <div class="col-sm-8">
+        <input type="hidden" class="form-control" formControlName="userId">
+        <input type="text" class="form-control" formControlName="firstName" id="firstName" required readonly></div>
+      <div class="col-sm-2">
+        <button type="button" class="btn btn-secondary" [disabled]="isUpdate"
+          (click)="openUserSearch();">Search</button></div>
+      <div
+        *ngIf="taskForm.controls['userId'].invalid && (taskForm.controls['userId'].dirty || taskForm.controls['userId'].touched)"
+        class="alert alert-danger">
+        <div *ngIf="taskForm.controls['userId'].errors.required">
+          User is required.
+        </div>
+      </div>
+    </div>
+<br>
+    <div class="form-group row float-right col-sm-3">
+      <button *ngIf="!isUpdate" type="button" class="btn btn-secondary btn-sm ml-2"
+        [disabled]="taskForm.pristine || taskForm.invalid || datesValidated" (click)="AddTask();">Add Task</button>
+      <button *ngIf="isUpdate" type="button" class="btn btn-secondary btn-sm ml-2"
+        [disabled]="taskForm.pristine || taskForm.invalid || datesValidated" (click)="UpdateTask();">Update
+        Task</button>
+      <button type="reset" class="btn btn-secondary btn-sm ml-2" [disabled]="!isUpdate" (click)="Reset();">Reset</button>
+    </div>
+  </form>
+</div>
+
+
+<app-dialog [(visible)]="showDialog">
+  <div class="modal-header">
+    <h4 class="modal-title">Project Search</h4>
+    <button (click)="showDialog = !showDialog" class="btn">X</button>
+  </div>
+  <div class="modal-body">
+
+    <input type="text" name="Search" id="inputSearch" class="form-control" value="" required="required" pattern=""
+      title="" [(ngModel)]="searchname">
+
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ProjectName</th>
+          <th>StartDate</th>
+          <th>EndDate</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of listProject ">
+          <td>{{item.projectName}}</td>
+          <td>{{item.startDate | date: 'dd/MM/yyyy'}}</td>
+          <td>{{item.endDate | date: 'dd/MM/yyyy'}}</td>
+          <td>
+            <button type="button" class="btn btn-secondary" (click)="AssignSelectedproject(item)">Select</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</app-dialog>
+
+<app-dialog [(visible)]="showParentTaskDialog">
+  <div class="modal-header">
+    <h4 class="modal-title">Parent Task Search</h4>
+    <button (click)="showParentTaskDialog = !showParentTaskDialog" class="btn">X</button>
+  </div>
+  <div class="modal-body">
+
+    <input type="text" name="Search" id="inputSearch" class="form-control" value="" required="required" pattern=""
+      title="" [(ngModel)]="searchname">
+
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Parent Task Id</th>
+          <th>Parent Task Name </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of listParentTask">
+          <td>{{item.parent_ID}}</td>
+          <td>{{item.parent_Task}}</td>
+
+          <td>
+            <button type="button" class="btn btn-secondary" (click)="AssignSelectedParentTask(item)">Select</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</app-dialog>
+
+
+<app-dialog [(visible)]="showUserTaskDialog">
+  <div class="modal-header">
+    <h4 class="modal-title">User Search</h4>
+    <button (click)="showUserTaskDialog = !showUserTaskDialog" class="btn">X</button>
+  </div>
+  <div class="modal-body">
+
+    <input type="text" name="Search" id="inputSearch" class="form-control" value="" required="required" pattern=""
+      title="" [(ngModel)]="searchname">
+
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>User Id</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of listUsers">
+          <td>{{item.userID}}</td>
+          <td>{{item.firstName}}</td>
+          <td>{{item.lastName}}</td>
+          <td>
+            <button type="button" class="btn btn-secondary" (click)="AssignSelectedUser(item)">Select</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</app-dialog>

@@ -1,0 +1,171 @@
+<div class="container">
+  <form [formGroup]="projectForm">
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="projectTitle">Project:</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" formControlName="projectTitle" id="projectTitle" required>
+      </div>
+      <div
+        *ngIf="projectForm.controls['projectTitle'].invalid && (projectForm.controls['projectTitle'].dirty || projectForm.controls['projectTitle'].touched)"
+        class="alert alert-danger" style="margin-left: 7%; width: 80%;padding:0px">
+        <div *ngIf="projectForm.controls['projectTitle'].errors.required">
+          Project Title is required.
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-2"></div>
+      <div class="col-sm-8">
+        <div class="col-sm-4 float-left">
+          <input class=" form-check form-check-input" type="checkbox" formControlName="setDates"
+            (click)="enableDisableDates($event);">
+          <label class="form-check-label">Set Start and End Date</label>
+        </div>
+        <div class="w-25 float-left">
+          <input type="date" class="form-control" formControlName="startDate" (change)="compareTwoDates();">
+        </div>
+        <div class="w-25 float-left ml-2">
+          <input type="date" class="form-control" formControlName="endDate" (change)="compareTwoDates();">
+        </div>
+      </div>
+    </div>
+    <div *ngIf="error.isError" class="alert alert-danger">
+      {{ error.errorMessage }}
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="priorityValue">Priority: <span
+          class="display-box">{{projectForm.controls['priorityValue'].value}}</span></label>
+      <div class="w-1">0</div>
+      <div class="col-sm-8">
+        <input type="range" class="form-control" value="0" min="0" max="30" formControlName="priorityValue"></div>
+      <div class="w-1">30</div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="managerId">Manager:</label>
+      <input type="hidden" class="form-control" formControlName="managerId" required>
+      <div class="col-sm-7">
+        <input type="text" class="form-control" formControlName="managerName" id="managerName" required>
+      </div>
+      <div class="col-sm-2">
+        <button (click)="openUserSearch()" type="button" class="btn">Search</button>
+      </div>
+      <div
+        *ngIf="projectForm.controls['managerId'].invalid && (projectForm.controls['managerId'].dirty || projectForm.controls['managerId'].touched)"
+        class="alert alert-danger">
+        <div *ngIf="projectForm.controls['managerId'].errors.required">
+          Manager is required.
+        </div>
+      </div>
+    </div>
+    <br>
+
+    <div class="form-group row float-right col-sm-3">
+      <button *ngIf="isAdd" type="button" (click)="addNewProject($event);"
+        [disabled]="projectForm.pristine || projectForm.invalid || datesValidated" class="btn btn-secondary ml-2">
+        Add
+      </button>
+      <button *ngIf="isAdd" type="button" class="btn btn-secondary ml-2"
+        (click)="resetProjectForm($event);">Reset</button>
+      <button *ngIf="isUpdate" type="button" (click)="updateProjectDetails($event);"
+        class="btn btn-secondary ml-2">Update</button>
+      <button *ngIf="isUpdate" type="button" class="btn btn-secondary ml-2"
+        (click)="cancelProjectUpdate($event);">Cancel</button>
+    </div>
+    <div *ngIf="message" class="alert alert-success" style=" width: 80%;padding:0px">
+      <div class="text-left">
+        {{message}}
+      </div>
+    </div>
+  </form>
+
+
+  <br>
+  <br>
+  <hr size="60" />
+
+  <div class="form-group">
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="inlineFormInputName2" (keyup)="filterProject($event)"
+        placeholder="Search...">
+    </div>
+    <br>
+    <br>
+    <div class="col-sm-10">
+      <label class="col-sm-2 col-form-label float-left">Sort By: </label>
+      <div class="col-sm-2 float-left">
+        <button type="button" class="btn btn-secondary btn-sm" (click)="sortProjects('startDate');">Start
+          Date <i class="fa fa-sort"></i></button></div>
+      <div class="col-sm-2 float-left">
+        <button type="button" class="btn btn-secondary btn-sm" (click)="sortProjects('endDate');">End Date <i
+            class="fa fa-sort"></i></button></div>
+      <div class="col-sm-2 float-left">
+        <button type="button" class="btn btn-secondary btn-sm" (click)="sortProjects('priority');">Priority <i
+            class="fa fa-sort"></i></button></div>
+      <div class="col-sm-2 float-left">
+        <button type="button" class="btn btn-secondary btn-sm" (click)="sortProjects('completed');">Completed
+          <i class="fa fa-sort"></i></button></div>
+    </div>
+  </div>
+  <br>
+  <br>
+  <div *ngIf="projectList">
+    <ng-container *ngFor="let item of projectList | filter : projectsearchname | orderBy:sortbycolumn:sortOrder">
+      <table class="table table-bordered">
+        <tr>
+          <td><b>Project</b></td>
+          <td colspan="3">{{item.projectName}}</td>
+          <td><b>Priority</b></td>
+          <td rowspan="2" class="align-middle"> <button type="button" class="btn btn-secondary btn-sm btn-block"
+              (click)="editProject(item);">Update</button>
+          </td>
+        </tr>
+        <tr>
+          <td><b>No of Tasks</b></td>
+          <td></td>
+          <td><b>Completed</b></td>
+          <td></td>
+          <td class="align-middle" rowspan="2">{{item.priority}}</td>
+        </tr>
+        <tr>
+          <td><b>Start Date</b></td>
+          <td>{{item.startDate  | date: 'dd/MM/yyyy'}}</td>
+          <td><b>End Date</b></td>
+          <td>{{item.endDate  | date: 'dd/MM/yyyy'}}</td>
+          <td><button type="button" class="btn btn-secondary btn-sm btn-block"
+              (click)="deleteProject(item.projectId);">Suspend</button></td>
+        </tr>
+      </table>
+    </ng-container>
+  </div>
+</div>
+<app-dialog [(visible)]="showDialog">
+  <div class="modal-header">
+    <h4 class="modal-title">Manager Search</h4>
+    <button (click)="showDialog = !showDialog" class="btn">X</button>
+  </div>
+  <div class="modal-body">
+    <input type="text" name="Search" id="inputSearch" class="form-control" value="" required="required" pattern=""
+      title="" [(ngModel)]="projectsearchname">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>FirstName</th>
+          <th>LastName</th>
+          <th>EmployeeID</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of users ">
+          <td>{{item.firstName}}</td>
+          <td>{{item.lastName}}</td>
+          <td>{{item.employeeID}}</td>
+          <td>
+            <button type="button" class="btn btn-secondary" (click)="SelectedUser(item)">Select</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</app-dialog>
