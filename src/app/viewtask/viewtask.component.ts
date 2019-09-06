@@ -67,8 +67,8 @@ export class ViewTaskComponent implements OnInit {
     private editTask(taskId: number, projectId: number) {
         let tempTask: Task; 
         //this.router.navigate(['/task', taskId, projectId, 'U']);
-        this._taskservice.Update(tempTask, taskId,).subscribe((data) => {
-            this.message = "Task Updated Successfully ";
+        this._taskservice.Update(tempTask,taskId,).subscribe((data) => {
+            this.message = "Task Updated Successfully. ";
         })
     }
 
