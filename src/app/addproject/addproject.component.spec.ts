@@ -14,17 +14,18 @@ describe('AddprojectComponent', () => {
         TestBed.configureTestingModule({
             imports:[FormsModule,ReactiveFormsModule,HttpModule,HttpClientModule],
             declarations: [AddprojectComponent,DialogComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
     }));
 
-    beforeEach(() => {
+    beforeEach(async(() => {
         fixture = TestBed.createComponent(AddprojectComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-    });
+    }));
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+    // it('should create', async(() => {
+    //     const fixture = TestBed.createComponent(AddprojectComponent);
+    // const app = fixture.debugElement.componentInstance;
+    //     expect(component).toBeTruthy();
+    // }));
 });

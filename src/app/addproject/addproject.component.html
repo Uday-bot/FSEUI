@@ -110,7 +110,7 @@
   <br>
   <br>
   <div *ngIf="projectList">
-    <ng-container *ngFor="let item of projectList | filter : projectsearchname | orderBy:sortbycolumn:sortOrder">
+    <ng-container *ngFor="let item of projectList">
       <table class="table table-bordered">
         <tr>
           <td><b>Project</b></td>
